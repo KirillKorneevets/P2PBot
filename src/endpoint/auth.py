@@ -1,7 +1,10 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi.responses import JSONResponse
+from passlib.context import CryptContext
+from fastapi import Cookie, HTTPException, Depends, Response
+from jose import JWTError, jwt
 
 from src.endpoint.dto.UserLoginDto import UserLoginDto
 from src.endpoint.dto.UserRegisterDto import UserRegisterDto
@@ -10,8 +13,7 @@ from src.repo import service
 from src.repo.exceptions import DuplicatedEntryError
 from src.repo.JWT import create_access_token, SECRET_KEY, ALGORITHM
 
-from fastapi import Cookie, HTTPException, Depends, Response
-from jose import JWTError, jwt
+
 
 
 
@@ -34,7 +36,10 @@ async def register_user(user: UserRegisterDto, session: AsyncSession = Depends(g
     if existing_user:
         return {"Message": "User already exists"}
 
-    user = service.add_user(session, user.username, user.password)
+    pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+    hashed_password = pwd_context.hash(user.password)
+
+    user = service.add_user(session, user.username, hashed_password)
 
     try:
         await session.commit()
@@ -47,16 +52,21 @@ async def register_user(user: UserRegisterDto, session: AsyncSession = Depends(g
 
 @router.post("/login")
 async def login_user(user: UserLoginDto, session: AsyncSession = Depends(get_session)):
-    user = await service.find_user_by_login_and_password(session, user.username, user.password)
-    if user is None:
+    user_data = await service.find_user_by_login(session, user.username)
+    if user_data is None:
         return {"Message": "Invalid username or password!"}
 
-    access_token = create_access_token({"sub": user.username})
+    pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-    response = JSONResponse(content={"access_token": access_token, "token_type": "bearer"})
-    response.set_cookie("access_token", access_token)
+    if pwd_context.verify(user.password, user_data.password):
+        access_token = create_access_token({"sub": user.username})
 
-    return response
+        response = JSONResponse(content={"access_token": access_token, "token_type": "bearer"})
+        response.set_cookie("access_token", access_token)
+
+        return response
+    else:
+        return {"Message": "Invalid username or password!"}
 
 @router.get("/secure-data")
 async def get_secure_data(response: Response, token: str = Cookie(None)):
@@ -68,3 +78,8 @@ async def get_secure_data(response: Response, token: str = Cookie(None)):
         return {"message": "Access granted for user: " + username}
     except JWTError:
         raise HTTPException(status_code=401, detail="Could not validate credentials")
+
+
+
+
+

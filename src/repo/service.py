@@ -20,3 +20,5 @@ async def find_user_by_login(session: AsyncSession, username: str) -> object:
     result: engine.Result = await session.execute(
         select(User).filter(User.username == username))
     return result.scalar()
+
+
