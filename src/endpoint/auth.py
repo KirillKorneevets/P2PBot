@@ -1,9 +1,8 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Cookie, HTTPException, Depends, Response, Request
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi.responses import JSONResponse
 from passlib.context import CryptContext
-from fastapi import Cookie, HTTPException, Depends, Response
 from jose import JWTError, jwt
 
 from src.endpoint.dto.UserLoginDto import UserLoginDto
@@ -68,18 +67,22 @@ async def login_user(user: UserLoginDto, session: AsyncSession = Depends(get_ses
     else:
         return {"Message": "Invalid username or password!"}
 
-@router.get("/secure-data")
-async def get_secure_data(response: Response, token: str = Cookie(None)):
+def get_current_user(request: Request):
+    token = request.cookies.get("access_token")
+    if not token:
+        raise HTTPException(status_code=401, detail="Token not provided")
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         username: str = payload.get("sub")
         if username is None:
-            raise HTTPException(status_code=400, detail="Could not identify user")
-        return {"message": "Access granted for user: " + username}
+            raise HTTPException(status_code=401, detail="Invalid token")
+        return {"username": username}
     except JWTError:
-        raise HTTPException(status_code=401, detail="Could not validate credentials")
+        raise HTTPException(status_code=401, detail="Invalid token")
 
-
+@router.get("/secure-data")
+async def get_secure_data(current_user: dict = Depends(get_current_user)):
+    return {"message": "SECRET DATA"}
 
 
 
