@@ -13,11 +13,6 @@ from src.repo.exceptions import DuplicatedEntryError
 from src.repo.JWT import create_access_token, SECRET_KEY, ALGORITHM
 
 
-
-
-
-
-
 router = APIRouter(
     prefix="/auth",
     responses={404: {"description": "Not found"}}
