@@ -19,7 +19,7 @@ app.add_middleware(
 )
 
 app.include_router(api.router)
-app.include_router(api.offers_router)
+
 
 
 if __name__ == '__main__':

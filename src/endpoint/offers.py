@@ -3,13 +3,13 @@ from fastapi.responses import JSONResponse
 import httpx
 
 router = APIRouter(
-    prefix="/offers",
+    prefix="/info",
     responses={404: {"description": "Not found"}}
 )
 
 
 
-@router.get("/info")
+@router.get("/offers")
 async def get_offers(
     crypto_currency_code: str = Query("BTC", description="Код криптовалюты"),
     currency_code: str = Query("BYN", description="Код фиатной валюты"),
@@ -42,3 +42,6 @@ async def get_offers(
             return JSONResponse(content=data)
         except httpx.RequestError as e:
             return JSONResponse(content={"error": f"Ошибка при запросе данных: {str(e)}"}, status_code=500)
+
+
+

@@ -11,7 +11,7 @@ from src.config.db_config import get_session
 from src.repo import service
 from src.repo.exceptions import DuplicatedEntryError
 from src.repo.JWT import create_access_token, SECRET_KEY, ALGORITHM
-
+from src.repo.models import PriceValue
 
 router = APIRouter(
     prefix="/auth",
@@ -33,7 +33,7 @@ async def register_user(user: UserRegisterDto, session: AsyncSession = Depends(g
     pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
     hashed_password = pwd_context.hash(user.password)
 
-    user = service.add_user(session, user.username, hashed_password)
+    new_user = await service.add_user(session, user.username, hashed_password)
 
     try:
         await session.commit()
