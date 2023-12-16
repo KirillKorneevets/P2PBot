@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Query
 from fastapi.responses import JSONResponse
-import httpx
+import requests
 
 router = APIRouter(
     prefix="/info",
@@ -10,7 +10,7 @@ router = APIRouter(
 
 
 @router.get("/offers")
-async def get_offers(
+def get_offers(
     crypto_currency_code: str = Query("BTC", description="Код криптовалюты"),
     currency_code: str = Query("BYN", description="Код фиатной валюты"),
     payment_method_bank_code: str = Query("B34", description="Код банка из справочников банков"),
@@ -34,14 +34,13 @@ async def get_offers(
         "type": offer_type
     }
 
-    async with httpx.AsyncClient() as client:
-        try:
-            response = await client.get(url, headers=headers, params=params)
-            response.raise_for_status()
-            data = response.json()
-            return JSONResponse(content=data)
-        except httpx.RequestError as e:
-            return JSONResponse(content={"error": f"Ошибка при запросе данных: {str(e)}"}, status_code=500)
+    try:
+        response = requests.get(url, headers=headers, params=params)
+        response.raise_for_status()
+        data = response.json()
+        return JSONResponse(content=data)
+    except requests.RequestException as e:
+        return JSONResponse(content={"error": f"Ошибка при запросе данных: {str(e)}"}, status_code=500)
 
 
 

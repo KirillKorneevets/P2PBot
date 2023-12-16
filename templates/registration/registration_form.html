@@ -1,0 +1,26 @@
+<!-- registration_form.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация</title>
+</head>
+<body>
+    <h1>{{ message }}</h1>
+    <form action="{{ url_for('register_user') }}" method="post">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <label for="username">Имя пользователя:</label>
+        <input type="text" id="username" name="username" required><br>
+
+        <label for="password">Пароль:</label>
+        <input type="password" id="password" name="password" required><br>
+
+        <label for="repeat_password">Повторите пароль:</label>
+        <input type="password" id="repeat_password" name="repeat_password" required><br>
+
+        <input type="submit" value="Register">
+    </form>
+</body>
+</html>

@@ -1,3 +1,8 @@
+from os.path import abspath, dirname
+import sys
+
+sys.path.append(abspath(dirname(__file__)))
+
 from logging.config import fileConfig
 
 from sqlalchemy import engine_from_config
@@ -16,8 +21,13 @@ if config.config_file_name is not None:
 
 # add your model's MetaData object here
 # for 'autogenerate' support
-from src.repo import models
+from src.models import models
 target_metadata = models.Base.metadata
+
+
+
+
+
 # target_metadata = None
 
 # other values from the config, defined by the needs of env.py,

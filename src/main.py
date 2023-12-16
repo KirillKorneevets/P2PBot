@@ -1,12 +1,11 @@
 import uvicorn
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI
+
 from src.route import api
 
 
-app = FastAPI(
-    title='Trading App'
-)
+app = FastAPI(title='P2PBot')
 
 origins = ["http://localhost:8005"]
 
