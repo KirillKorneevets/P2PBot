@@ -62,7 +62,7 @@ def login_user(
         access_token = create_access_token({"sub": username})
 
         response = JSONResponse(content={"access_token": access_token, "token_type": "bearer"})
-        response.set_cookie("access_token", access_token)
+        response.set_cookie(key="access_token", value=access_token, httponly=True)
 
         return response
     else:
