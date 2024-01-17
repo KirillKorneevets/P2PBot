@@ -1,14 +1,15 @@
-from fastapi import APIRouter, HTTPException, Depends, Request, Form
+from fastapi import APIRouter, HTTPException, Depends, Request, Form, status
 from sqlalchemy.exc import IntegrityError
 from fastapi.responses import JSONResponse
 from passlib.context import CryptContext
-from jose import JWTError, jwt
-from sqlalchemy.orm import Session
+from fastapi.responses import RedirectResponse
+from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.config.db_config import get_sync_session
+from src.config.db_config import get_async_session
 from src.repo import service
 from src.repo.exceptions import DuplicatedEntryError
-from src.repo.JWT import create_access_token, SECRET_KEY, ALGORITHM
+from src.repo.JWT import create_access_token, create_refresh_token
+
 
 router = APIRouter(
     prefix="/auth",
@@ -22,7 +23,7 @@ def register_user(
     username: str = Form(...),
     password: str = Form(...),
     repeat_password: str = Form(...),
-    session: Session = Depends(get_sync_session)
+    session: AsyncSession = Depends(get_async_session)
 ):
     if password != repeat_password:
         return {"error": "Passwords do not match!"}
@@ -47,43 +48,39 @@ def register_user(
 
 
 @router.post("/login")
-def login_user(
+async def login_user(
     username: str = Form(...),
     password: str = Form(...),
-    session: Session = Depends(get_sync_session)
+    session: AsyncSession = Depends(get_async_session),
 ):
-    user_data = service.find_user_by_login(session, username)
+    user_data = await service.find_user_by_login(session, username)
     if user_data is None:
-        return {"Message": "Invalid username or password!"}
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid username or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
 
     pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
     if pwd_context.verify(password, user_data.password):
         access_token = create_access_token({"sub": username})
+        refresh_token = create_refresh_token({"sub": username})
 
-        response = JSONResponse(content={"access_token": access_token, "token_type": "bearer"})
-        response.set_cookie(key="access_token", value=access_token, httponly=True)
+        redirect_url = "/FlashCoinTrade"
 
+        response = RedirectResponse(url=redirect_url)
+        response.set_cookie(key="access_token", value=access_token, httponly=True, secure=True)
+        response.set_cookie(key="refresh_token", value=refresh_token, httponly=True, secure=True)
         return response
     else:
-        return {"Message": "Invalid username or password!"}
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid username or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
 
-def get_current_user(request: Request):
-    token = request.cookies.get("access_token")
-    if not token:
-        raise HTTPException(status_code=401, detail="Token not provided")
-    try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        username: str = payload.get("sub")
-        if username is None:
-            raise HTTPException(status_code=401, detail="Invalid token")
-        return {"username": username}
-    except JWTError:
-        raise HTTPException(status_code=401, detail="Invalid token")
 
-@router.get("/secure-data")
-def get_secure_data(current_user: dict = Depends(get_current_user)):
-    return {"message": "SECRET DATA"}
 
 
 

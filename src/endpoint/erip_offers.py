@@ -3,13 +3,13 @@ from fastapi.responses import JSONResponse
 import requests
 
 router = APIRouter(
-    prefix="/info",
+    prefix="/bitpapa",
     responses={404: {"description": "Not found"}}
 )
 
 
 
-@router.get("/offers")
+@router.get("/erip-offers")
 def get_offers(
     crypto_currency_code: str = Query("BTC", description="Код криптовалюты"),
     currency_code: str = Query("BYN", description="Код фиатной валюты"),
