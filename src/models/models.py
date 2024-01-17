@@ -4,13 +4,13 @@ from sqlalchemy import Column, String, Integer, Float, ForeignKey
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 
-from src.config.db_config import Base
+from src.config.db_config import AsyncBase
 from sqlalchemy import MetaData
 
 metadata = MetaData()
 
 
-class User(Base):
+class User(AsyncBase):
     __tablename__ = "users"
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, unique=True)
@@ -20,7 +20,7 @@ class User(Base):
     price_values = relationship("PriceValue", back_populates="user")
     api_tokens = relationship("BitpapaApiTokens", back_populates="user")
 
-class PriceValue(Base):
+class PriceValue(AsyncBase):
     __tablename__ = "price_value"
 
     id = Column(Integer, primary_key=True)
@@ -30,7 +30,7 @@ class PriceValue(Base):
 
     user = relationship("User", back_populates="price_values")
 
-class BitpapaApiTokens(Base):
+class BitpapaApiTokens(AsyncBase):
 
     __tablename__ = "bitpapa_api_tokens"
 

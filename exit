@@ -1,0 +1,59 @@
+[33mcommit c35c366260e729fb8bd626252a96f24995a83d33[m[33m ([m[1;36mHEAD -> [m[1;32mfeature/auth[m[33m, [m[1;31morigin/dev[m[33m, [m[1;32mfeature/bitpapa_tokens[m[33m, [m[1;32mdev[m[33m)[m
+Author: KirillKorneevets <melkiu763@gmail.com>
+Date:   Sat Dec 23 16:19:29 2023 +0300
+
+    modified auth
+
+[33mcommit 0e902ada8a3e39fcc851718babf864b0b67fecb9[m
+Author: KirillKorneevets <melkiu763@gmail.com>
+Date:   Sat Dec 16 14:17:53 2023 +0300
+
+    modified 1.5
+
+[33mcommit 9b7bde1166ad0b7bc8aab38f93d6d4ac87493303[m
+Author: KirillKorneevets <melkiu763@gmail.com>
+Date:   Wed Nov 15 18:53:26 2023 +0300
+
+    remove .env
+
+[33mcommit 69bb3f1b3a7907118109da6638fb949ce4d23dff[m
+Author: KirillKorneevets <melkiu763@gmail.com>
+Date:   Wed Nov 15 18:51:26 2023 +0300
+
+    remove .gitignore
+
+[33mcommit 9d3c84de8cf38918913f57a51ee93e1f303ce4c6[m
+Author: KirillKorneevets <melkiu763@gmail.com>
+Date:   Wed Nov 15 18:27:33 2023 +0300
+
+    modified_1.4
+
+[33mcommit 7c81620ac4c8d3bdf171436c3e4a46e175084438[m
+Author: KirillKorneevets <melkiu763@gmail.com>
+Date:   Mon Oct 9 18:00:50 2023 +0300
+
+    modified_1.3
+
+[33mcommit e06cab45b67e63e643953887e85c4b5aba047c8a[m
+Author: KirillKorneevets <melkiu763@gmail.com>
+Date:   Fri Oct 6 14:29:58 2023 +0300
+
+    modified_1.2
+
+[33mcommit c92828f62e6dfe21c653266fd94793317806ecce[m[33m ([m[1;32mmaster[m[33m)[m
+Author: KirillKorneevets <melkiu763@gmail.com>
+Date:   Fri Oct 6 12:29:23 2023 +0300
+
+    modified_1.1
+
+[33mcommit 9bb9242c3c31a36011eda762a795077dfc9e9878[m
+Author: KirillKorneevets <melkiu763@gmail.com>
+Date:   Wed Oct 4 20:12:19 2023 +0300
+
+    modified_1.0
+
+[33mcommit 5e72257a0bd65f5ea4ed8ac14cf54a01f31dcfe3[m[33m ([m[1;31morigin/master[m[33m)[m
+Author: KirillKorneevets <melkiu763@gmail.com>
+Date:   Wed Oct 4 13:52:51 2023 +0300
+
+    first add
