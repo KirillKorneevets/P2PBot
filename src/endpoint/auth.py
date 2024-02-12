@@ -5,6 +5,7 @@ from passlib.context import CryptContext
 from fastapi.responses import RedirectResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from src.endpoint.dto.UserLoginDto import UserLoginDto
 from src.config.db_config import get_async_session
 from src.repo import service
 from src.repo.exceptions import DuplicatedEntryError
@@ -19,30 +20,31 @@ router = APIRouter(
 
 
 @router.post("/registration")
-def register_user(
+async def register_user(
     username: str = Form(...),
     password: str = Form(...),
     repeat_password: str = Form(...),
     session: AsyncSession = Depends(get_async_session)
 ):
     if password != repeat_password:
-        return {"error": "Passwords do not match!"}
+        return JSONResponse(content={"error": "Passwords do not match!"}, status_code=status.HTTP_400_BAD_REQUEST)
 
-    existing_user = service.find_user_by_login(session, username)
+    existing_user = await service.find_user_by_login(session, username)
 
-    if existing_user:
-        return {"Message": "User already exists"}
+    if existing_user is not None:
+        return JSONResponse(content={"Message": "User already exists"}, status_code=status.HTTP_400_BAD_REQUEST)
+
 
     pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
     hashed_password = pwd_context.hash(password)
 
-    new_user = service.add_user(session, username, hashed_password)
+    new_user = await service.add_user(session, username, hashed_password)
 
     try:
-        session.commit()
+        await session.commit()
         return {"Message": "User registered successfully"}
     except IntegrityError as ex:
-        session.rollback()
+        await session.rollback()
         raise DuplicatedEntryError("The User is already stored")
 
 
@@ -64,8 +66,10 @@ async def login_user(
     pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
     if pwd_context.verify(password, user_data.password):
-        access_token = create_access_token({"sub": username})
-        refresh_token = create_refresh_token({"sub": username})
+        user_id = str(user_data.id)
+
+        access_token = create_access_token({"sub": username, "id": user_id})
+        refresh_token = create_refresh_token({"sub": username, "id": user_id})
 
         redirect_url = "/FlashCoinTrade"
 

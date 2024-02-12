@@ -1,24 +1,73 @@
-<!-- registration_form.html -->
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Регистрация</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            background-color: #808080;
+        }
+
+        h1 {
+            margin-top: 20px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        label {
+            margin-bottom: 8px;
+            color: #fff;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 8px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        input[type="submit"] {
+            background-color: #FFD700;
+            color: #333;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #ad9600;
+        }
+    </style>
 </head>
 <body>
     <h1>{{ message }}</h1>
     <form action="{{ url_for('register_user') }}" method="post">
         <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
         <label for="username">Имя пользователя:</label>
-        <input type="text" id="username" name="username" required><br>
+        <input type="text" id="username" name="username" required>
 
         <label for="password">Пароль:</label>
-        <input type="password" id="password" name="password" required><br>
+        <input type="password" id="password" name="password" required>
 
         <label for="repeat_password">Повторите пароль:</label>
-        <input type="password" id="repeat_password" name="repeat_password" required><br>
+        <input type="password" id="repeat_password" name="repeat_password" required>
 
         <input type="submit" value="Register">
     </form>
