@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlashCoinTrade</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            background-color: #808080;
+        }
+
+        .button-container {
+            margin-top: 20px;
+        }
+
+        .btn {
+            background-color: #FFD700;
+            color: #333;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            margin-bottom: 10px;
+        }
+
+        .btn:hover {
+            background-color: #ad9600;
+        }
+    </style>
+</head>
+<body>
+    <div class="button-container">
+        <a href="{{ url_for('get_api_token') }}" class="btn">Api Token</a>
+        <a href="{{ url_for('render_bitpapa_user_info') }}" class="btn">P2PBot</a>
+    </div>
+</body>
+</html>

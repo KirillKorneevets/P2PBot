@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bitpapa User Info</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            background-color: #808080;
+        }
+
+        .container {
+            margin-top: 20px;
+        }
+
+        .user-info {
+            font-size: 40px;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .buttons-container {
+            display: flex;
+            flex-direction: row;
+            margin-bottom: 20px;
+        }
+
+        .button-column {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .button-row {
+            display: flex;
+            flex-direction: column;
+            margin-right: 10px;
+        }
+
+        .button-item, .balance-item {
+            list-style: none;
+            padding: 10px;
+            background-color: #ffd700;
+            border-radius: 5px;
+            text-align: center;
+            cursor: pointer;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .balance-item {
+            list-style: none;
+            padding: 10px;
+            background-color: #ffd700;
+            border-radius: 5px;
+            text-align: center;
+            margin-right: 14px;
+        }
+
+        .offer-type-sell, .offer-type-buy {
+            text-align: center;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .offer-type-sell {
+            margin-right: 10px;
+        }
+
+        .offer-type-buy {
+            margin-left: -10px;
+        }
+
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .toggle-label {
+            margin-right: 10px;
+            color: #fff;
+        }
+
+        .toggle-checkbox {
+            appearance: none;
+            width: 40px;
+            height: 20px;
+            border-radius: 10px;
+            background: #555;
+            outline: none;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .toggle-checkbox::before {
+            content: '';
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #ffd700;
+            top: 1px;
+            left: 1px;
+            transition: 0.3s;
+        }
+
+        .toggle-checkbox:checked::before {
+            left: 21px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="user-info">
+            {{ user_info.user_name }}
+        </div>
+
+        <div class="buttons-container">
+            <div class="button-column">
+                <div class="offer-type-sell">
+                    Sell
+                </div>
+
+                <div class="button-row">
+                    <a class="button-item" href="/erip-offers">ERIP</a>
+                    <a class="button-item" href="/card2card-offers">Card2Card</a>
+                    <a class="button-item" href="/alfabank-offers">Alfa Bank</a>
+                </div>
+            </div>
+
+            <div class="button-column">
+                <div class="offer-type-buy">
+                    Buy
+                </div>
+
+                <div class="button-row">
+                    <a class="button-item" href="/erip-offers-buy">ERIP</a>
+                    <a class="button-item" href="/card2card-offers-buy">Card2Card</a>
+                    <a class="button-item" href="/alfabank-offers-buy">Alfa Bank</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="balances">
+            {% for code, balance in user_info.balance.items() %}
+                <div class="balance-item">
+                    <strong>{{ code }}</strong>: {{ balance.value }}
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="toggle-container">
+            <label class="toggle-label" for="botStatusCheckbox">Bot Status:</label>
+            <input type="checkbox" id="botStatusCheckbox" class="toggle-checkbox" onchange="activateBot(this.checked)">
+            <span id="botStatusText">Inactive</span>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const botStatusText = document.getElementById('botStatusText');
+            const botStatusCheckbox = document.getElementById('botStatusCheckbox');
+
+            const response = await fetch('/get-bot-status');
+            const result = await response.json();
+
+            if (result && result.status === 'success') {
+                const isBotActive = result.is_bot_active;
+                botStatusText.innerText = isBotActive ? 'Active' : 'Inactive';
+                botStatusCheckbox.checked = isBotActive;
+            }
+
+            botStatusCheckbox.addEventListener('change', async () => {
+                const activate = botStatusCheckbox.checked;
+                const response = await fetch('/activate-bot', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `activate=${activate}`,
+                });
+
+                const result = await response.json();
+                console.log(result);
+
+                botStatusText.innerText = activate ? 'Active' : 'Inactive';
+            });
+        });
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+

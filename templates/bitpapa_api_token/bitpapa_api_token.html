@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API токен</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            background-color: #808080;
+        }
+
+        form {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        label {
+            margin-bottom: 10px;
+            color: #fff;
+        }
+
+        input {
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 300px;
+        }
+
+        button {
+            background-color: #FFD700;
+            color: #333;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #ad9600;
+        }
+    </style>
+</head>
+<body>
+    <h1>{{ message }}</h1>
+    <form action="{{ url_for('get_bitpapa_token') }}" method="post">
+        <label for="api_token">Введите актуальный API токен для сервиса Bitpapa:</label>
+        <input type="text" id="api_token" name="api_token" required>
+        <button type="submit">Отправить</button>
+    </form>
+</body>
+</html>
+
