@@ -34,6 +34,8 @@ class User(AsyncBase):
 
     price_values = relationship("PriceValueBYN", back_populates="user")
     api_tokens = relationship("BitpapaApiTokens", back_populates="user")
+    bitpapa_user_name = relationship("BitpapaUserName", back_populates="user")
+
 
 
 class PriceValueBYN(AsyncBase):
@@ -61,3 +63,13 @@ class PriceValueBYN(AsyncBase):
     alfabank_buy = Column(Float, default=None)
 
     user = relationship("User", back_populates="price_values")
+
+
+class BitpapaUserName(AsyncBase):
+    __tablename__ = "bitpapa_user_name"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, unique=True, index=True, default=uuid.uuid4)
+    user_id = Column(UUID(as_uuid=True), ForeignKey('users.id'), nullable=False)
+    username = Column(String, unique=True)
+
+    user = relationship("User", back_populates="bitpapa_user_name")

@@ -1,5 +1,5 @@
 from src.auth_depends.current_user import get_current_user
-from src.models.models import User, PriceValueBYN, BitpapaApiTokens
+from src.models.models import User, PriceValueBYN, BitpapaApiTokens, BitpapaUserName
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
@@ -78,5 +78,23 @@ async def find_user_by_id(session: AsyncSession, user_id: str):
         return None
 
 
-async def find_offer_id():
-    pass
+async def find_bitpapa_username(session: AsyncSession, user_id: str):
+    try:
+        stmt = select(BitpapaUserName.username).where(BitpapaUserName.user_id == user_id)
+        result = await session.execute(stmt)
+        username = result.scalar_one_or_none()
+        return username
+
+    except SQLAlchemyError as e:
+        print(f"Произошла ошибка в find_bitpapa_username: {e}")
+        return None
+
+async def get_users_with_bot_active(session: AsyncSession):
+    try:
+        stmt = select(User).where(User.is_bot_active == True)
+        result = await session.execute(stmt)
+        return result.scalars().all()
+
+    except SQLAlchemyError as e:
+        print(f"Произошла ошибка в find_bitpapa_username: {e}")
+        return None
