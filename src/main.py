@@ -1,7 +1,10 @@
+import asyncio
 import uvicorn
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI
 from src.route import api
+
+from src.requests.post_request_buy.erip_post_request_buy import post_erip_buy_task
 
 
 app = FastAPI(title='P2PBot')
@@ -17,6 +20,10 @@ app.add_middleware(
 )
 
 app.include_router(api.router)
+
+@app.on_event("startup")
+async def startup_event():
+    task = asyncio.create_task(post_erip_buy_task())
 
 
 if __name__ == '__main__':

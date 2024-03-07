@@ -45,10 +45,10 @@ async def get_erip_offers_buy(
             response.raise_for_status()
             json_data = response.json()
             return json_data
-    except requests.RequestException as e:
+    except httpx.HTTPStatusError as e:
         return JSONResponse(content={"error": f"Ошибка при запросе данных: {str(e)}"}, status_code=500)
 
-    except (requests.RequestException, httpx.RequestError) as e:
+    except httpx.RequestError as e:
         return JSONResponse(content={"error": f"Ошибка при формировании запроса: {str(e)}"}, status_code=500)
 
     except httpx.TimeoutException as e:
